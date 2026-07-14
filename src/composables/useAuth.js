@@ -1,6 +1,7 @@
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useApi } from "@/composables/useApi";
+import { useRoute, useRouter } from "vue-router";
 
 export function useAuth() {
   const authStore = useAuthStore();
@@ -8,9 +9,11 @@ export function useAuth() {
   const { loading, error, request, api } = useApi();
 
   async function login(credentials) {
+    const route = useRoute();
     const data = await request(() => api.post("/login", credentials));
+
     authStore.setAuth(data.token, data.user);
-    router.push("/");
+    router.push(route.query.redirect || "/");
   }
 
   async function register(payload) {

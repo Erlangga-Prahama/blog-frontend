@@ -36,7 +36,7 @@ const routes = [
       },
       {
         path: "dashboard/posts/create",
-        name: "post-edit",
+        name: "post-create",
         component: () => import("@/views/PostFormView"),
         meta: { requiresAuth: true },
       },
