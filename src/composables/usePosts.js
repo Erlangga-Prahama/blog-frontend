@@ -12,15 +12,15 @@ export function usePosts() {
     })
 
     async function fetchPosts(params = {}) {
-        const data = await request(() => api.get('/posts', { params }))
-        
-        posts.value = data.data
-        meta.value = {
-            current_page: data.meta?.current_page ?? data.current_page ?? 1,
-            last_page: data.meta?.last_page ?? data.last_page ?? 1,
-            total: data.meta?.total ?? data.total ?? 0,
-        }
+      const data = await request(() => api.get("/posts", { params }));
 
-        return {posts, meta, loading, fetchPosts}
+      posts.value = data.data;
+      meta.value = {
+        current_page: data.meta?.current_page ?? data.current_page ?? 1,
+        last_page: data.meta?.last_page ?? data.last_page ?? 1,
+        total: data.meta?.total ?? data.total ?? 0,
+      };
     }
+
+    return { posts, meta, loading, error, fetchPosts };
 }
