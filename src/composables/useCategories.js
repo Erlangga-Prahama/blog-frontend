@@ -2,7 +2,7 @@ import { ref } from "vue";
 import { useApi } from "@/composables/useApi";
 
 export function useCategories() {
-  const { loading, error, request, api } = useApi;
+  const { loading, error, request, api } = useApi();
 
   const categories = ref([]);
 
