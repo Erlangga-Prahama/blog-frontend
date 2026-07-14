@@ -16,8 +16,42 @@ const routes = [
   },
   {
     path: "/",
-    name: "home",
-    component: () => import("@/views/PostListView.vue"),
+    component: () => import("@/layouts/MainLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "home",
+        component: () => import("@/views/PostListView.vue"),
+      },
+      {
+        path: "posts/:slug",
+        name: "post-detail",
+        component: () => import("@/views/PostDetailView.vue"),
+      },
+      {
+        path: "dashboard",
+        name: "dashboard",
+        component: () => import("@/views/DashboardView.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "dashboard/posts/create",
+        name: "post-edit",
+        component: () => import("@/views/PostFormView"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "dashboard/posts/:id/edit",
+        name: "post-edit",
+        component: () => import("@/views/PostFormView"),
+        meta: { requiresAuth: true },
+      },
+    ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("@/views/NotFoundView.vue"),
   },
 ];
 
