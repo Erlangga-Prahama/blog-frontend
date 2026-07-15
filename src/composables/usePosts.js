@@ -28,5 +28,30 @@ export function usePosts() {
     posts.value = data.data || data;
   }
 
-  return { posts, meta, loading, error, fetchPosts, fetchPost };
+  async function fetchMyPosts(params = {}) {
+    const data = await request(() => api.get("/my-posts", { params }));
+    post.value = data.data;
+    meta.value = {
+      current_page: data.meta?.current_page ?? 1,
+      last_page: data.meta?.last_page ?? 1,
+      total: data.meta?.total ?? 0,
+    };
+  }
+
+  async function deletePost(id) {
+    await request(() => api.delete(`/posts/${id}`));
+
+    posts.value = posts.value.filter((p) => p.id !== id);
+  }
+
+  return {
+    posts,
+    meta,
+    loading,
+    error,
+    fetchPosts,
+    fetchPost,
+    fetchMyPosts,
+    deletePost,
+  };
 }
