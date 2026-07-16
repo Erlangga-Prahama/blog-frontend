@@ -1,4 +1,3 @@
-import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useApi } from "@/composables/useApi";
 import { useRoute, useRouter } from "vue-router";
