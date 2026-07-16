@@ -28,6 +28,11 @@ export function usePosts() {
     post.value = data.data || data;
   }
 
+  async function fetchPostById(id) {
+    const data = await request(() => api.get(`/posts/${id}`));
+    post.value = data.data || data;
+  }
+
   async function fetchMyPosts(params = {}) {
     const data = await request(() => api.get("/my-posts", { params }));
     posts.value = data.data;
@@ -36,6 +41,25 @@ export function usePosts() {
       last_page: data.meta?.last_page ?? 1,
       total: data.meta?.total ?? 0,
     };
+  }
+
+  async function createPost(formData) {
+    const data = await request(() =>
+      api.post("/posts", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+    );
+    return data.data || data;
+  }
+
+  async function updatePost(id, formData) {
+    formData.append("_method", "PUT");
+    const data = await request(() =>
+      api.post(`/posts/${id}`, formData, {
+        header: { "Content-Type": "multipart/form-data" },
+      }),
+    );
+    return data.data || data;
   }
 
   async function deletePost(id) {
@@ -52,7 +76,10 @@ export function usePosts() {
     error,
     fetchPosts,
     fetchPost,
+    fetchPostById,
     fetchMyPosts,
+    createPost,
+    updatePost,
     deletePost,
   };
 }

@@ -9,21 +9,21 @@ export function useAuth() {
 
   async function login(credentials) {
     const route = useRoute();
-    const data = await request(() => api.post("/login", credentials));
+    const data = await request(() => api.post("/auth/login", credentials));
 
     authStore.setAuth(data.token, data.user);
     router.push(route.query.redirect || "/");
   }
 
   async function register(payload) {
-    const data = await request(() => api.post("/register", payload));
+    const data = await request(() => api.post("/auth/register", payload));
     authStore.setAuth(data.token, data.user);
     router.push("/");
   }
 
   async function logout() {
     try {
-      await request(() => api.post("/logout"));
+      await request(() => api.post("/auth/logout"));
     } finally {
       authStore.clearAuth();
       router.push("/login");
