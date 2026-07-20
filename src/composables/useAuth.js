@@ -1,23 +1,26 @@
+import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { useApi } from "@/composables/useApi";
-import { useRoute, useRouter } from "vue-router";
 
 export function useAuth() {
   const authStore = useAuthStore();
   const router = useRouter();
+  const route = useRoute(); // <-- pindah ke sini, JANGAN di dalam login()
   const { loading, error, request, api } = useApi();
 
-  async function login(credentials) {
-    const route = useRoute();
-    const data = await request(() => api.post("/auth/login", credentials));
+  // storeToRefs menjaga `user` & `isAuthenticated` tetap reaktif
+  const { user, isAuthenticated } = storeToRefs(authStore);
 
-    authStore.setAuth(data.token, data.user);
+  async function login(credentials) {
+    const data = await request(() => api.post("/auth/login", credentials));
+    authStore.setAuth(data.data.token, data.data.user);
     router.push(route.query.redirect || "/");
   }
 
   async function register(payload) {
     const data = await request(() => api.post("/auth/register", payload));
-    authStore.setAuth(data.token, data.user);
+    authStore.setAuth(data.data.token, data.data.user);
     router.push("/");
   }
 
@@ -31,8 +34,8 @@ export function useAuth() {
   }
 
   return {
-    user: authStore.user,
-    isAuthenticated: authStore.isAuthenticated,
+    user,
+    isAuthenticated,
     loading,
     error,
     login,

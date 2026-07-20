@@ -1,9 +1,9 @@
-import { ref } from 'vue';
-import { useApi } from '@/composables/useApi'
+import { ref } from "vue";
+import { useApi } from "@/composables/useApi";
 
 export function usePosts() {
-    const { loading, error, request, api } = useApi()
-    
+  const { loading, error, request, api } = useApi();
+
   const post = ref(null);
   const posts = ref([]);
   const meta = ref({
@@ -15,31 +15,26 @@ export function usePosts() {
   async function fetchPosts(params = {}) {
     const data = await request(() => api.get("/posts", { params }));
 
-    posts.value = data.data;
+    posts.value = data.data?.posts ?? [];
     meta.value = {
-      current_page: data.meta?.current_page ?? data.current_page ?? 1,
-      last_page: data.meta?.last_page ?? data.last_page ?? 1,
-      total: data.meta?.total ?? data.total ?? 0,
+      current_page: data.data?.pagination?.current_page ?? 1,
+      last_page: data.data?.pagination?.last_page ?? 1,
+      total: data.data?.pagination?.total ?? 0,
     };
   }
 
-  async function fetchPost(slug) {
-    const data = await request(() => api.get(`/posts/${slug}`));
-    post.value = data.data || data;
-  }
-
-  async function fetchPostById(id) {
+  async function fetchPost(id) {
     const data = await request(() => api.get(`/posts/${id}`));
-    post.value = data.data || data;
+    post.value = data.data?.post ?? data.data ?? data;
   }
 
   async function fetchMyPosts(params = {}) {
     const data = await request(() => api.get("/my-posts", { params }));
-    posts.value = data.data;
+    posts.value = data.data?.posts ?? [];
     meta.value = {
-      current_page: data.meta?.current_page ?? 1,
-      last_page: data.meta?.last_page ?? 1,
-      total: data.meta?.total ?? 0,
+      current_page: data.data?.pagination?.current_page ?? 1,
+      last_page: data.data?.pagination?.last_page ?? 1,
+      total: data.data?.pagination?.total ?? 0,
     };
   }
 
@@ -49,22 +44,21 @@ export function usePosts() {
         headers: { "Content-Type": "multipart/form-data" },
       }),
     );
-    return data.data || data;
+    return data.data?.post ?? data.data ?? data;
   }
 
   async function updatePost(id, formData) {
     formData.append("_method", "PUT");
     const data = await request(() =>
       api.post(`/posts/${id}`, formData, {
-        header: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" },
       }),
     );
-    return data.data || data;
+    return data.data?.post ?? data.data ?? data;
   }
 
   async function deletePost(id) {
     await request(() => api.delete(`/posts/${id}`));
-
     posts.value = posts.value.filter((p) => p.id !== id);
   }
 
@@ -76,7 +70,6 @@ export function usePosts() {
     error,
     fetchPosts,
     fetchPost,
-    fetchPostById,
     fetchMyPosts,
     createPost,
     updatePost,

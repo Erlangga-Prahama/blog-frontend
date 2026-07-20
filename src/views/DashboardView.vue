@@ -75,7 +75,7 @@ function cancelDelete() {
       >
         <div class="min-w-0 flex-1">
           <RouterLink
-            :to="{ name: 'post-detail', params: { slug: p.slug } }"
+            :to="{ name: 'post-detail', params: { id: p.id } }"
             class="text-sm font-medium text-gray-900 hover:text-indigo-600 truncate block"
           >
             {{ p.title }}

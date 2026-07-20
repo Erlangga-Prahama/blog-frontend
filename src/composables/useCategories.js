@@ -8,7 +8,7 @@ export function useCategories() {
 
   async function fetchCategories() {
     const data = await request(() => api.get("/categories"));
-    categories.value = data.data || data;
+    categories.value = data.data?.categories ?? [];
   }
 
   return { categories, loading, error, fetchCategories };

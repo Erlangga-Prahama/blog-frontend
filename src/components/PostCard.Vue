@@ -4,12 +4,12 @@ defineProps({
     type: Object,
     required: true,
   },
-});
+})
 </script>
 
 <template>
   <RouterLink
-    :to="{ name: 'post-detail', params: { slug: post.slug } }"
+    :to="{ name: 'post-detail', params: { id: post.id } }"
     class="group block bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition"
   >
     <div class="aspect-[16/9] bg-gray-100 overflow-hidden">
@@ -19,10 +19,7 @@ defineProps({
         :alt="post.title"
         class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
       />
-      <div
-        v-else
-        class="w-full h-full flex items-center justify-center text-gray-300 text-sm"
-      >
+      <div v-else class="w-full h-full flex items-center justify-center text-gray-300 text-sm">
         Tidak ada gambar
       </div>
     </div>
@@ -35,9 +32,7 @@ defineProps({
         {{ post.category.name }}
       </span>
 
-      <h3
-        class="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-indigo-600 transition"
-      >
+      <h3 class="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-indigo-600 transition">
         {{ post.title }}
       </h3>
 

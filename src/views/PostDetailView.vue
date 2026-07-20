@@ -7,12 +7,12 @@ const route = useRoute()
 const { post, loading, fetchPost } = usePosts()
 
 function load() {
-  fetchPost(route.params.slug)
+  fetchPost(route.params.id)
 }
 
 onMounted(load)
 
-watch(() => route.params.slug, load)
+watch(() => route.params.id, load)
 </script>
 
 <template>
