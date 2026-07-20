@@ -29,12 +29,12 @@ export function usePosts() {
   }
 
   async function fetchMyPosts(params = {}) {
-    const data = await request(() => api.get("/my-posts", { params }));
+    const data = await request(() => api.get("/posts", { params }));
     posts.value = data.data?.posts ?? [];
-    meta.value = {
-      current_page: data.data?.pagination?.current_page ?? 1,
-      last_page: data.data?.pagination?.last_page ?? 1,
-      total: data.data?.pagination?.total ?? 0,
+    meta.value = data.data?.pagination ?? {
+      current_page: 1,
+      last_page: 1,
+      total: 0,
     };
   }
 
