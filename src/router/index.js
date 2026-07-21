@@ -46,6 +46,12 @@ const routes = [
         component: () => import("@/views/PostFormView.vue"),
         meta: { requiresAuth: true },
       },
+      {
+        path: "admin",
+        name: "admin-dashboard",
+        component: () => import("@/views/AdminDashboardView.vue"),
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
     ],
   },
   {
@@ -58,20 +64,24 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+});
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore();
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return next({ name: 'login', query: { redirect: to.fullPath } })
+    return next({ name: "login", query: { redirect: to.fullPath } });
+  }
+
+  if (to.meta.requiresAdmin && authStore.user?.role !== "admin") {
+    return next({ name: "home" });
   }
 
   if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return next({ name: 'home' })
+    return next({ name: "home" });
   }
 
-  next()
-})
+  next();
+});
 
 export default router
