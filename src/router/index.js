@@ -22,11 +22,13 @@ const routes = [
         path: "",
         name: "home",
         component: () => import("@/views/PostListView.vue"),
+        meta: { showSidebar: true },
       },
       {
         path: "posts/:id",
         name: "post-detail",
         component: () => import("@/views/PostDetailView.vue"),
+        meta: { showSidebar: true },
       },
       {
         path: "dashboard",
