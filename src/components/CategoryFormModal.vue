@@ -1,27 +1,28 @@
 <script setup>
-import { ref, watch } from "vue";
-import { errorMessages } from "vue/compiler-sfc";
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   show: { type: Boolean, default: false },
-  category: { type: Object, default: null },
+  category: { type: Object, default: null }, // null = mode create
   loading: { type: Boolean, default: false },
-  errorMessages: { type: String, default: "" },
-});
+  errorMessage: { type: String, default: '' },
+})
 
-const emit = defineEmits(["submit", "cancel"]);
+const emit = defineEmits(['submit', 'cancel'])
+
+const name = ref('')
 
 watch(
   () => props.show,
   (val) => {
     if (val) {
-      name.value = props.category?.name ?? "";
+      name.value = props.category?.name ?? ''
     }
-  },
-);
+  }
+)
 
 function handleSubmit() {
-  emit("submit", { name: name.value });
+  emit('submit', { name: name.value })
 }
 </script>
 
@@ -33,7 +34,7 @@ function handleSubmit() {
   >
     <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-lg">
       <h3 class="text-base font-semibold text-gray-900 mb-4">
-        {{ category ? "Edit Kategori" : "Tambah Kategori" }}
+        {{ category ? 'Edit Kategori' : 'Tambah Kategori' }}
       </h3>
 
       <div
@@ -44,9 +45,7 @@ function handleSubmit() {
       </div>
 
       <form @submit.prevent="handleSubmit">
-        <label class="block text-sm font-medium text-gray-700 mb-1.5"
-          >Nama Kategori</label
-        >
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Kategori</label>
         <input
           v-model="name"
           type="text"
@@ -69,7 +68,7 @@ function handleSubmit() {
             :disabled="loading"
             class="px-4 py-2 text-sm rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
           >
-            {{ loading ? "Menyimpan..." : "Simpan" }}
+            {{ loading ? 'Menyimpan...' : 'Simpan' }}
           </button>
         </div>
       </form>

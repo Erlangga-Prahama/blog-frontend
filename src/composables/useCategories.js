@@ -17,7 +17,7 @@ export function useCategories() {
   }
 
   async function updateCategory(id, payload) {
-    const data = await request(() => api.post(`/categories/${id}`, payload));
+    const data = await request(() => api.put(`/categories/${id}`, payload));
     return data.data;
   }
 

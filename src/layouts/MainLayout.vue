@@ -52,10 +52,18 @@ function toggleSidebar() {
         <nav class="flex items-center gap-4">
           <template v-if="isAuthenticated">
             <RouterLink
-              to="/dashboard"
+              :to="{ name: 'dashboard' }"
               class="text-sm text-gray-600 hover:text-indigo-600"
             >
               Dashboard
+            </RouterLink>
+
+            <RouterLink
+              v-if="user?.role === 'admin'"
+              :to="{ name: 'admin-dashboard' }"
+              class="text-sm text-gray-600 hover:text-indigo-600"
+            >
+              Admin
             </RouterLink>
             <span class="text-sm text-gray-500 hidden sm:inline">
               Hai, {{ user?.name }}
