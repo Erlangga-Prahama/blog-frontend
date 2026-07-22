@@ -12,16 +12,34 @@ const deleteTarget = ref(null)
 const deleting = ref(false)
 const deleteError = ref(null)
 
+const search = ref('')
+const statusFilter = ref('all')
+
 // Filter di frontend: hanya post milik user yang login
-const myPosts = computed(() =>
+const myPosts = computed(() => {
+    let result = posts.value.filter((p) => p.author?.id === user.value?.id)
+    if (statusFilter.value !== 'all') {
+      result = result.filter((p) => p.status === statusFilter.value)
+    }
+
+    if (search.value.trim()) {
+      const keyword = search.value.trim().toLowerCase()
+      result = result.filter((p) => p.title.toLowerCase().includes(keyword))
+    }
+
+    return result
+  }
+)
+
+const allMyPosts = computed(() =>
   posts.value.filter((p) => p.author?.id === user.value?.id)
 )
 
 const publishedCount = computed(
-  () => myPosts.value.filter((p) => p.status === 'published').length
+  () => allMyPosts.value.filter((p) => p.status === 'published').length
 )
 const draftCount = computed(
-  () => myPosts.value.filter((p) => p.status === 'draft').length
+  () => allMyPosts.value.filter((p) => p.status === 'draft').length
 )
 
 function load() {
@@ -98,6 +116,32 @@ onMounted(load)
       </RouterLink>
     </div>
 
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+      <input 
+        v-model="search" type="text" 
+        placeholder="Cari judul post..."
+        class="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition">
+      
+        <div class="flex gap-1.5">
+            <button
+              v-for="opt in [
+                { value: 'all', label: 'Semua' },
+                { value: 'published', label: 'Terbit' },
+                { value: 'draft', label: 'Draft' },
+                { value: 'archived', label: 'Arsip' },
+              ]"
+              :key="opt.value"
+              @click="statusFilter = opt.value"
+              class="px-3.5 py-2 text-sm rounded-xl border transition whitespace-nowrap"
+              :class="statusFilter === opt.value
+                ? 'bg-indigo-600 text-white border-indigo-600'
+                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+    </div>
+
     <!-- Stats card -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
       <div class="bg-white rounded-2xl border border-gray-100 p-5">
@@ -145,21 +189,22 @@ onMounted(load)
       class="py-16 text-center bg-white rounded-2xl border border-gray-100"
     >
       <svg class="w-16 h-16 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-        />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
       </svg>
-      <p class="text-gray-500 font-medium">Kamu belum menulis post apapun</p>
-      <p class="text-gray-400 text-sm mt-1 mb-4">Mulai tulis post pertamamu</p>
-      <RouterLink
-        :to="{ name: 'post-create' }"
-        class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-indigo-700 transition"
-      >
-        Tulis sekarang
-      </RouterLink>
+      <template v-if="search || statusFilter !== 'all'">
+        <p class="text-gray-500 font-medium">Tidak ada post yang cocok</p>
+        <p class="text-gray-400 text-sm mt-1">Coba ubah kata kunci atau filter status.</p>
+      </template>
+      <template v-else>
+        <p class="text-gray-500 font-medium">Kamu belum menulis post apapun</p>
+        <p class="text-gray-400 text-sm mt-1 mb-4">Mulai tulis post pertamamu</p>
+        <RouterLink
+          :to="{ name: 'post-create' }"
+          class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-indigo-700 transition"
+        >
+          Tulis sekarang
+        </RouterLink>
+      </template>
     </div>
 
     <!-- Post list -->
